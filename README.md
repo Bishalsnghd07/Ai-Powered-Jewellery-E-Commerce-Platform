@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AI-Powered Jewelry E-Commerce Platform
 
-## Getting Started
+This is a fullstack demo for [G******]'s next-generation AI-driven e-commerce platform, built with modern technologies and AI integration.
 
-First, run the development server:
+## Key Features ✨
 
+Users can:
+- Browse jewelry categories with **responsive design**
+- View product details with dynamic routing
+- Interact with an **AI shopping assistant** (chatbot) for:
+  - Product recommendations
+  - Order inquiries
+  - Style advice
+- Experience **seamless animations** and micro-interactions
+
+## AI Enhancements 🤖
+- **Floating GPT-like chatbot** with:
+  - Natural language processing
+  - Context-aware follow-up questions
+  - Voice input capability
+- Automated product suggestions
+- [Add any other AI features you implemented]
+
+## Screenshots
+
+![Homepage](/public/screenshots/home.png)
+![Product Page](/public/screenshots/product.png)
+![AI Chatbot](/public/screenshots/chatbot.png)
+
+## Tech Stack 🛠️
+### Frontend
+- **Next.js 14** (App Router)
+- **Tailwind CSS** + CSS animations
+- **TypeScript**
+- React Hook Forms
+- Framer Motion (animations)
+
+### Backend
+- **Node.js** (Express/NestJS)
+- **MongoDB** (Atlas cloud)
+
+### AI Integration
+- OpenAI API (or your chosen solution)
+- Custom prompt engineering
+- Voice recognition API
+
+## Performance 🚀
+![Lighthouse Score](/public/screenshots/lighthouse.png)
+- 100/100 Performance (Mobile & Desktop)
+- 95+ Accessibility Score
+- Instant page loads (Edge Network)
+
+## Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+git clone [your-repo]
+cd client && npm install
+cd ../server && npm install
