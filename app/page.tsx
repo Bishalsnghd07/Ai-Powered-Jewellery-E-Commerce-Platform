@@ -3,6 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import CategoryCard from "@/components/CategoryCard";
 import AboutSection from "@/components/AboutSection";
 import Footer from "@/components/Footer";
+import Chatbot from "@/components/ChatBot";
 
 export default function Home() {
   const categories = [
@@ -37,8 +38,8 @@ export default function Home() {
           />
         ))}
       </div>
-
       <AboutSection />
+      <Chatbot />
       <Footer />
     </main>
   );

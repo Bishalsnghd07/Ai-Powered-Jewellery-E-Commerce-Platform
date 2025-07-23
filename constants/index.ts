@@ -10,111 +10,152 @@ import {
   RxDashboard,
 } from "react-icons/rx";
 
-export const Socials = [
-  {
-    name: "Discord",
-    src: "/assets/discord.svg",
-  },
-  {
-    name: "Facebook",
-    src: "/assets/facebook.svg",
-  },
-  {
-    name: "Instagram",
-    src: "/assets/instagram.svg",
-  },
-];
+interface FollowUpOption {
+  option: string;
+  answer?: string;
+  followUp?: FollowUpQuestion;
+}
 
-export const NavLinks = [
-  {
-    name: "Home",
-    icon: RxHome,
-    link: "/",
-  },
-  {
-    name: "About me",
-    icon: RxPerson,
-    link: "/about-me",
-  },
-  {
-    name: "Projects",
-    icon: RxDashboard,
-    link: "/my-projects",
-  },
-];
+interface FollowUpQuestion {
+  question: string;
+  options: FollowUpOption[];
+}
 
-export const ProImages = [
-  {
-    src: "/assets/projects/SpaceCity.jpg",
-  },
-  {
-    src: "/assets/projects/SpaceCity1.jpg",
-  },
-  {
-    src: "/assets/projects/SpaceCity2.jpg",
-  },
-  {
-    src: "/assets/projects/SpaceCity3.jpg",
-  },
-];
-
-export const ProImages2 = [
-  {
-    src: "/assets/projects/Orange1.jpeg",
-  },
-  {
-    src: "/assets/projects/Orange2.jpeg",
-  },
-  {
-    src: "/assets/projects/Orange3.jpeg",
-  },
-  {
-    src: "/assets/projects/Orange4.jpeg",
-  },
-];
-
-export const ServiceData = [
-  {
-    icon: RxReader,
-    title: "Seo",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: "/assets/space/SpaceCity7.jpeg",
-  },
-  {
-    icon: RxCrop,
-    title: "Development",
-    content: "Lorem ipsum dolor sit /amet, consectetur adipiscing elit.",
-    backgroundImage: "/assets/space/SpaceCity9.jpeg",
-  },
-  {
-    icon: RxPencil2,
-    title: "Branding",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: "/assets/space/SpaceCity1.jpg",
-  },
-  {
-    icon: RxDesktop,
-    title: "Design",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: "/assets/space/SpaceCity6.jpeg",
-  },
-  {
-    icon: RxAccessibility,
-    title: "Management",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: "/assets/space/SpaceCity5.jpeg",
-  },
-  {
-    icon: RxRocket,
-    title: "Production",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: "/assets/space/SpaceCity8.jpeg",
-  },
-];
+interface ChatbotDataItem {
+  question: string;
+  options: FollowUpOption[];
+}
 
 export const menuItems = [
   { name: "Home", path: "/" },
   { name: "Rings", path: "/rings" },
   { name: "Necklaces", path: "/necklaces" },
   { name: "Earrings", path: "/earrings" },
+];
+
+export const chatbotData: ChatbotDataItem[] = [
+  {
+    question: "How can I help you with our jewelry collection today?",
+    options: [
+      {
+        option: "Browse Products",
+        followUp: {
+          question: "Which category interests you?",
+          options: [
+            {
+              option: "Rings",
+              answer:
+                "We offer a stunning collection of rings including diamond, gold, and custom designs. <a href='/rings' class='text-amber-600 underline'>View our ring collection</a>",
+            },
+            {
+              option: "Necklaces",
+              answer:
+                "Explore our necklaces ranging from delicate chains to statement pieces. <a href='/necklaces' class='text-amber-600 underline'>Browse necklaces</a>",
+            },
+            {
+              option: "Earrings",
+              answer:
+                "Discover our earring selection including studs, hoops, and drops. <a href='/earrings' class='text-amber-600 underline'>See earrings</a>",
+            },
+          ],
+        },
+      },
+      {
+        option: "Order Assistance",
+        followUp: {
+          question: "What do you need help with?",
+          options: [
+            {
+              option: "Track my order",
+              answer:
+                "Please enter your order number and I'll check the status for you. You can also <a href='/track-order' class='text-amber-600 underline'>visit the order tracking page</a>.",
+            },
+            {
+              option: "Return an item",
+              answer:
+                "Our 30-day return policy covers all items. <a href='/returns' class='text-amber-600 underline'>Start your return here</a> or would you like me to guide you through the process?",
+            },
+            {
+              option: "Custom order",
+              answer:
+                "We specialize in custom jewelry designs. Please <a href='/contact' class='text-amber-600 underline'>contact our design team</a> with your requirements.",
+            },
+          ],
+        },
+      },
+      {
+        option: "Product Information",
+        followUp: {
+          question: "What would you like to know?",
+          options: [
+            {
+              option: "Materials & Quality",
+              answer:
+                "All our jewelry uses ethically-sourced materials: 14K/18K gold, conflict-free diamonds, and genuine gemstones. Each piece comes with a certificate of authenticity.",
+            },
+            {
+              option: "Sizing Guide",
+              answer:
+                "We provide detailed sizing charts for rings and necklaces. <a href='/sizing' class='text-amber-600 underline'>View our sizing guide</a> or I can help you determine your size.",
+            },
+            {
+              option: "Care Instructions",
+              answer:
+                "To maintain your jewelry's shine: Avoid chemicals, store properly, and clean with our included polishing cloth. <a href='/care' class='text-amber-600 underline'>Full care guide here</a>.",
+            },
+          ],
+        },
+      },
+      {
+        option: "Payment & Shipping",
+        followUp: {
+          question: "What would you like to know?",
+          options: [
+            {
+              option: "Payment Options",
+              answer:
+                "We accept all major credit cards, PayPal, and offer financing through Affirm. All transactions are securely processed.",
+            },
+            {
+              option: "Shipping Information",
+              answer:
+                "Free express shipping on all orders over $500. Delivery typically takes 2-3 business days. <a href='/shipping' class='text-amber-600 underline'>Full shipping details</a>.",
+            },
+            {
+              option: "International Orders",
+              answer:
+                "We ship worldwide with DHL Express. Duties/taxes may apply. <a href='/international' class='text-amber-600 underline'>See international shipping info</a>.",
+            },
+          ],
+        },
+      },
+      {
+        option: "Contact Support",
+        followUp: {
+          question: "How would you like to reach us?",
+          options: [
+            {
+              option: "Live Chat",
+              answer:
+                "You're already chatting with me! I can help with most inquiries or connect you to a human agent if needed.",
+            },
+            {
+              option: "Email",
+              answer:
+                "Email us at support@luxejewels.com and we'll respond within 24 hours.",
+            },
+            {
+              option: "Phone",
+              answer: "Call our concierge at (888) 555-0123 (9am-9pm EST).",
+            },
+            {
+              option: "Store Visit",
+              answer:
+                "Visit our NYC flagship at 5th Avenue. <a href='/locations' class='text-amber-600 underline'>View store hours and directions</a>.",
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];
