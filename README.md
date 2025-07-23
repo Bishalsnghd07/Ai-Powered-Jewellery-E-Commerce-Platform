@@ -1,6 +1,6 @@
 # AI-Powered Jewelry E-Commerce Platform
 
-This is a fullstack demo for [Gygnus]'s next-generation AI-driven e-commerce platform, built with modern technologies and AI integration.
+This is a fullstack demo for [Gygnus] next-generation AI-driven e-commerce platform, built with modern technologies and AI integration.
 
 ## Key Features ✨
 
@@ -20,8 +20,7 @@ Users can:
   - Natural language processing
   - Context-aware follow-up questions
   - Voice input capability
-- Automated product suggestions
-- [Add any other AI features you implemented]
+  - Automated product suggestions
 
 ## Screenshots
 
@@ -42,22 +41,21 @@ Users can:
 - **TypeScript**
 - React Hook Forms
 - Framer Motion (animations)
+- ShadCN UI (templates)
 
 ### Backend
 
-- **Node.js** (Express/NestJS)
-- **MongoDB** (Atlas cloud)
+- **Node.js** (Express/NextJS)
+- **MongoDB** (Not reuired for this project)
 
 ### AI Integration
 
-- OpenAI API (or your chosen solution)
+- OpenAI API
 - Custom prompt engineering
 - Voice recognition API
 
 ## Performance 🚀
 
-![Lighthouse Score](/public/screenshots/lighthouse.png)
-
 - 100/100 Performance (Mobile & Desktop)
-- 95+ Accessibility Score
+- 94+ Accessibility Score
 - Instant page loads (Edge Network)

@@ -55,7 +55,7 @@ export const NECKLACE_PRODUCTS = {
       { quantity: 1, item: "Dust pouch" },
       { quantity: 1, item: "Care instructions" },
     ],
-    image: "/jewelry/layer-necklaces.jpeg",
+    image: "/jewelry/layer-necklaces.jpg",
   },
 
   "chain-necklace": {

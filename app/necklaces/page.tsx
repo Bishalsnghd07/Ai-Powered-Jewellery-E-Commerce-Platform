@@ -19,7 +19,7 @@ export default function NecklacesCollection() {
     {
       title: "LAYERED NECKLACES",
       href: "/necklaces/layer-necklace",
-      imageSrc: "/jewelry/layered-necklaces.jpeg",
+      imageSrc: "/jewelry/layer-necklaces.jpeg",
     },
     {
       title: "CHAIN NECKLACES",
