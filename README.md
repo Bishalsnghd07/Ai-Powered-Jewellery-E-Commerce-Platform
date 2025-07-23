@@ -25,9 +25,13 @@ Users can:
 
 ## Screenshots
 
-![Homepage](/public/package/Homepage.png)
-![Product Page](/public/screenshots/product.png)
-![AI Chatbot](/public/screenshots/chatbot.png)
+![Homepage](/public/package/homepage.png)
+![Product Page](/public/package/product.png)
+![AI Chatbot](/public/package/chatbot.png)
+![Product Details Page](/public/package/product-details.png)
+![Checkout Cart drop down](/public/package/checkout-cart.png)
+![Billing Page](/public/package/billing-page.png)
+![Order Success Page](/public/package/order-success.png)
 
 ## Tech Stack 🛠️
 

@@ -18,9 +18,9 @@ export default function RootLayout({
       <body>
         <link rel="icon" href="favicon.svg" type="image/svg+xml" />
         <CartProvider>
-          <div className="flex relative top-0 bg-[#191919] z-[20] w-full gap-4 justify-between items-center sm:px-20 lg:px-40 md:pt-[1.8rem] p-6 border-b border-gray-100 border-opacity-10">
+          <header className="flex relative top-0 bg-[#191919] z-[20] w-full gap-4 justify-between items-center sm:px-20 lg:px-40 md:pt-[1.8rem] p-6 border-b border-gray-100 border-opacity-10">
             <Navbar />
-          </div>
+          </header>
           {children}
         </CartProvider>
       </body>
