@@ -28,8 +28,8 @@ const Navbar = () => {
           <Link
             href={item.path}
             key={item.name}
-            className={`text-white hover:text-[#D87D4A] transition-colors text-base font-semibold uppercase tracking-wider ${
-              pathname === item.path ? "text-[#d4af37]" : ""
+            className={`text-white hover:text-[#bca146] transition-colors text-base font-semibold uppercase tracking-wider ${
+              pathname === item.path ? "text-[#e2bb39]" : ""
             }`}
           >
             {item.name}
