@@ -24,7 +24,7 @@ Users can:
 
 ## Screenshots
 
-![Homepage](/public/package/homepage.png)
+![Homepage](/public/package/Homepage.png)
 ![Product Page](/public/package/product.png)
 ![AI Chatbot](/public/package/chatbot.png)
 ![Product Details Page](/public/package/product-details.png)
