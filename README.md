@@ -1,6 +1,6 @@
 # AI-Powered Jewelry E-Commerce Platform
 
-This is a fullstack demo for [G******]'s next-generation AI-driven e-commerce platform, built with modern technologies and AI integration.
+This is a fullstack demo for [Gygnus]'s next-generation AI-driven e-commerce platform, built with modern technologies and AI integration.
 
 ## Key Features ✨
 
@@ -49,9 +49,3 @@ Users can:
 - 100/100 Performance (Mobile & Desktop)
 - 95+ Accessibility Score
 - Instant page loads (Edge Network)
-
-## Installation
-```bash
-git clone [your-repo]
-cd client && npm install
-cd ../server && npm install
