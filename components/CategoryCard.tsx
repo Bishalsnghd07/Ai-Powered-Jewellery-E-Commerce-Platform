@@ -19,7 +19,7 @@ export default function CategoryCard({
   return (
     <Link
       href={href}
-      scroll={false}
+      scroll={true}
       className="relative group w-full md:max-w-[19rem]"
     >
       <div className="relative bg-gray-100 rounded-lg h-[150px] pt-20 px-6 pb-4 overflow-visible">
