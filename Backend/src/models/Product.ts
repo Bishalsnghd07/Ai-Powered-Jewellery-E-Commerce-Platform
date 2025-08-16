@@ -1,0 +1,72 @@
+// import { Schema, model, Document } from "mongoose";
+
+// interface IProduct extends Document {
+//   id: string; // e.g. "diamond-ring"
+//   name: string;
+//   price: number;
+//   description: string;
+//   features: string;
+//   includes: { quantity: number; item: string }[];
+//   materials: string[];
+//   images: string[]; // Cloudinary URLs
+//   category: "rings" | "necklaces" | "earrings";
+//   tagline?: string;
+// }
+
+// const ProductSchema = new Schema<IProduct>(
+//   {
+//     id: { type: String, required: true, unique: true },
+//     name: { type: String, required: true },
+//     price: { type: Number, required: true },
+//     description: { type: String, required: true },
+//     features: { type: String, required: true },
+//     includes: [
+//       {
+//         quantity: Number,
+//         item: String,
+//       },
+//     ],
+//     materials: [String],
+//     images: { type: [String], required: true },
+//     category: {
+//       type: String,
+//       enum: ["rings", "necklaces", "earrings"],
+//       required: true,
+//     },
+//     tagline: String,
+//   },
+//   { timestamps: true }
+// );
+
+// export default model<IProduct>("Product", ProductSchema);
+
+// src/models/Product.ts
+import { Schema, model, Document } from "mongoose";
+
+export interface IProduct extends Document {
+  id: string;
+  name: string;
+  price: number;
+  description?: string;
+  images: string[];
+  category: "rings" | "necklaces" | "earrings";
+  // Add other fields as needed
+}
+
+const ProductSchema = new Schema<IProduct>(
+  {
+    id: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    description: String,
+    images: { type: [String], required: true },
+    category: {
+      type: String,
+      enum: ["rings", "necklaces", "earrings"],
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+export default model<IProduct>("Product", ProductSchema);
