@@ -1,6 +1,0 @@
-# env files
-.env
-.env*
-*.env
-.env.development
-.env.local
