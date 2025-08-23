@@ -27,7 +27,7 @@ export async function fetchProducts(category: string = "all") {
 }
 
 export async function fetchProductById(id: string) {
-  const res = await fetch(`${API_BASE_URL}/products/${id}`);
+  const res = await fetch(`${API_BASE_URL}/api/products/${id}`);
   if (!res.ok) throw new Error("Product not found");
   return res.json();
 }
