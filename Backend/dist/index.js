@@ -18,8 +18,8 @@ const PORT = process.env.PORT || 5000;
 // Enhanced CORS configuration
 app.use((0, cors_1.default)({
     origin: [
-        process.env.FRONTEND_URL || "http://localhost:3000",
-        "http://127.0.0.1:3000", // Add alternative localhost URL
+        "https://ai-powered-jewellery-e-commerce-pla.vercel.app",
+        "http://localhost:3000",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
