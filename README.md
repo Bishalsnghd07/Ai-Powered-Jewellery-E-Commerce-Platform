@@ -24,13 +24,15 @@ Users can:
 
 ## Screenshots
 
-![Homepage](/public/package/homepage.png)
-![AI Chatbot](/public/package/chatbot.png)
-![Product Page](/public/package/product.png)
-![Product Details Page](/public/package/product-details.png)
-![Checkout Cart drop down](/public/package/checkout-cart.png)
-![Billing Page](/public/package/billing-page.png)
-![Order Success Page](/public/package/order-success.png)
+![Homepage](/Frontend/public/package/homepage.png)
+![AI Chatbot](/Frontend/public/package/chatbot.png)
+![Product Page](/Frontend/public/package/product.png)
+![Product Details Page](/Frontend/public/package/product-details.png)
+![Checkout Cart drop down](/Frontend/public/package/checkout-cart.png)
+![Billing Page](/Frontend/public/package/billing-page.png)
+![Confirming Payment popup](/Frontend/public/package/confirm-payment.png)
+![Payment Successful via Razorpay payment gateway](/Frontend/public/package/payment-success.png)
+![Order Success Page](/Frontend/public/package/order-success.png)
 
 ## Tech Stack 🛠️
 
