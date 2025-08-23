@@ -36,7 +36,7 @@ export async function createOrder(orderData: any) {
   try {
     console.log("Sending order data:", orderData); // Log outgoing data
 
-    const response = await fetch(`${API_BASE_URL}/orders`, {
+    const response = await fetch(`${API_BASE_URL}/api/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export async function createOrder(orderData: any) {
 
     console.log("Received response status:", response.status);
 
-    console.log("Full request URL:", `${API_BASE_URL}/orders`);
+    console.log("Full request URL:", `${API_BASE_URL}/api/orders`);
 
     // First check if response is HTML (error page)
     const contentType = response.headers.get("content-type");

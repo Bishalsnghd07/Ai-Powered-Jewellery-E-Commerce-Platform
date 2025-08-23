@@ -127,7 +127,7 @@ export default function CheckoutPage() {
         order_id: response.razorpayOrderId,
         handler: async (razorpayResponse: any) => {
           const verifyRes = await fetch(
-            `${API_BASE_URL}/orders/verify-payment`,
+            `${API_BASE_URL}/api/orders/verify-payment`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
