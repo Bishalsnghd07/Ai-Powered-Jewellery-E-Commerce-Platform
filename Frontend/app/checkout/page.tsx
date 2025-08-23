@@ -52,24 +52,6 @@ export default function CheckoutPage() {
 
   const paymentMode = watch("paymentMode");
 
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   email: "",
-  //   phone: "",
-  //   address: {
-  //     street: "",
-  //     city: "",
-  //     state: "",
-  //     zipCode: "",
-  //     country: "",
-  //   },
-  //   id: "",
-  //   paymentMode: "upi",
-  //   paymentMethod: "razorpay", // Default to UPI
-  //   upiId: "",
-  //   selectedBank: "",
-  // });
-
   const shippingFee = 50;
   const vat = Math.round(cartTotal * 0.2);
   const grandTotal = cartTotal + shippingFee;

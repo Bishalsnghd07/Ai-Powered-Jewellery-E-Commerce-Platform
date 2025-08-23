@@ -12,7 +12,9 @@ export async function fetchProducts(category: string = "all") {
   }
 
   try {
-    const res = await fetch(`/api/products?category=${category}`);
+    const res = await fetch(
+      `${API_BASE_URL}/api/products?category=${category}`
+    );
     if (!res.ok) throw new Error("Failed to fetch");
 
     const data = await res.json();
