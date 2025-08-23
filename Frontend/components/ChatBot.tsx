@@ -37,6 +37,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
 
+  // Add this useEffect to handle changes to initialOpen
+  useEffect(() => {
+    setIsOpen(initialOpen);
+  }, [initialOpen]);
+
   // Add scroll ref
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
