@@ -297,7 +297,29 @@ export default function RingDetail({
           </div>
         </div>
       </div>
-      {/* ... */}
+      {/* Features & Includes Sections */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-28 mt-32 md:ml-24 mb-12">
+        <div>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">FEATURES</h2>
+          <p className="text-gray-600 whitespace-pre-line">
+            {product.features}
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">INCLUDES</h2>
+          <ul className="space-y-2">
+            {product.includes.map((item, index) => (
+              <li key={index} className="flex">
+                <span className="text-amber-600 font-bold w-8">
+                  {item.quantity}x
+                </span>
+                <span className="text-gray-600">{item.item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

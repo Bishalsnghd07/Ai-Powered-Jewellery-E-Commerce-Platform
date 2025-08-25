@@ -122,8 +122,8 @@ export default function RingsCollection() {
             <Image
               src={ring.images[0]}
               alt={ring.name}
-              width={550}
-              height={550}
+              width={450}
+              height={450}
               className="rounded-lg"
               priority
             />
@@ -141,11 +141,6 @@ export default function RingsCollection() {
             <h2 className="text-3xl text-black font-bold mb-4 text-center">
               {ring.name}
             </h2>
-
-            {/* PRICE */}
-            <p className="text-black text-2xl font-medium mb-4">
-              ${ring.price.toLocaleString()}
-            </p>
 
             {/* DESCRIPTION */}
             <p className="text-gray-700 text-base mb-6 max-w-md text-center">

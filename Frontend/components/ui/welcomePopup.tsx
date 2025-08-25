@@ -16,7 +16,7 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ onOpenChatbot }) => {
       const timer = setTimeout(() => {
         setIsVisible(true);
         localStorage.setItem("hasSeenWelcomePopup", "true");
-      }, 1500); // Show after 1.5 seconds
+      }, 1000); // Show after 1 seconds
 
       return () => clearTimeout(timer);
     }
