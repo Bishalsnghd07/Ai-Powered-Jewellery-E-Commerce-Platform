@@ -36,6 +36,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
   const [navHistory, setNavHistory] = useState<FollowUpOption[][]>([]);
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
+  const [isAiThinking, setIsAiThinking] = useState(false);
 
   // Add this useEffect to handle changes to initialOpen
   useEffect(() => {
@@ -54,6 +55,77 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
     scrollToBottom();
   }, [messages]); // Trigger when messages change
 
+  // AI Response Function using Hugging Face API
+  const getAIResponse = async (inputText: string): Promise<string> => {
+    try {
+      setIsAiThinking(true);
+
+      // Using a free AI API (Hugging Face Inference API)
+      // You'll need to create a free account at huggingface.co and get an API token
+      const HUGGING_FACE_API_KEY =
+        process.env.NEXT_PUBLIC_HUGGING_FACE_API_KEY || ""; // Set your API key in .env.local
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${HUGGING_FACE_API_KEY}`, // Replace with your API key
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ inputs: inputText }),
+        }
+      );
+
+      // Check if the response is successful
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error(
+            "Invalid API token. Please check your Hugging Face token."
+          );
+        } else if (response.status === 503) {
+          // Model is loading, need to wait
+          return "The AI model is loading. Please try again in a few moments.";
+        } else {
+          throw new Error(
+            `API error: ${response.status} ${response.statusText}`
+          );
+        }
+      }
+
+      const result = await response.json();
+      setIsAiThinking(false);
+
+      if (result.error) {
+        console.error("AI API Error:", result.error);
+        return "I'm having trouble connecting to the AI service right now. Please try again later.";
+      }
+
+      // Extract the generated text from the response
+      return result.generated_text || "I'm not sure how to respond to that.";
+    } catch (error) {
+      console.error("Error fetching AI response:", error);
+      setIsAiThinking(false);
+      return "Sorry, I encountered an error while processing your request.";
+    }
+  };
+
+  // Fallback to a simple rule-based response if API calls fail
+  const getFallbackResponse = (inputText: string): string => {
+    const lowerCaseInput = inputText.toLowerCase();
+
+    // Simple keyword matching as fallback
+    if (lowerCaseInput.includes("thank"))
+      return "You're welcome! Is there anything else I can help with?";
+    if (lowerCaseInput.includes("hello") || lowerCaseInput.includes("hi"))
+      return "Hello! How can I assist you today?";
+    if (lowerCaseInput.includes("help"))
+      return "I'm here to help! What do you need assistance with?";
+    if (lowerCaseInput.includes("bye") || lowerCaseInput.includes("goodbye"))
+      return "Goodbye! Feel free to come back if you have more questions.";
+
+    return "I'm not sure how to respond to that. Could you try asking in a different way?";
+  };
+
   const handleBack = () => {
     if (navHistory.length > 1) {
       // Only allow back if there's history
@@ -66,7 +138,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
     }
   };
 
-  const handleSendMessage = (inputText: string) => {
+  const handleSendMessage = async (inputText: string) => {
     if (!inputText.trim()) return;
 
     // Add user message
@@ -132,30 +204,65 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
 
     const matchedResponse = findResponse(chatbotData, lowerCaseInput);
 
-    // Corrected messages update with proper scoping
-    setMessages((prevMessages) => {
-      const newMessages = [
-        ...prevMessages,
-        {
-          sender: "bot",
-          text:
-            matchedResponse?.text || "Sorry, I don't have an answer for that.",
-          followUpQuestions: matchedResponse?.followUpQuestions,
-        },
-      ];
+    if (matchedResponse) {
+      // Corrected messages update with proper scoping
+      setMessages((prevMessages) => {
+        const newMessages = [
+          ...prevMessages,
+          {
+            sender: "bot",
+            text:
+              matchedResponse?.text ||
+              "Sorry, I don't have an answer for that.",
+            followUpQuestions: matchedResponse?.followUpQuestions,
+          },
+        ];
 
-      // Update navigation history using correct references
-      if (matchedResponse?.followUpQuestions) {
-        setNavHistory((prevHistory) => [
-          ...prevHistory,
-          prevMessages.length > 0
-            ? prevMessages[prevMessages.length - 1]?.followUpQuestions || []
-            : chatbotData[0].options,
+        // Update navigation history using correct references
+        if (matchedResponse?.followUpQuestions) {
+          setNavHistory((prevHistory) => [
+            ...prevHistory,
+            prevMessages.length > 0
+              ? prevMessages[prevMessages.length - 1]?.followUpQuestions || []
+              : chatbotData[0].options,
+          ]);
+        }
+
+        return newMessages;
+      });
+    } else {
+      // If no predefined response found, use AI
+      try {
+        // Try Hugging Face API first
+        let aiResponse = await getAIResponse(inputText);
+
+        // If the API returns an error, use the fallback
+        if (
+          aiResponse.includes("trouble connecting") ||
+          aiResponse.includes("error")
+        ) {
+          aiResponse = getFallbackResponse(inputText);
+        }
+
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            sender: "bot",
+            text: aiResponse,
+          },
+        ]);
+      } catch (error) {
+        // If all else fails, use the fallback response
+        const fallbackResponse = getFallbackResponse(inputText);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            sender: "bot",
+            text: fallbackResponse,
+          },
         ]);
       }
-
-      return newMessages;
-    });
+    }
   };
 
   const handleBackToMenu = () => setMessages([]);
@@ -208,7 +315,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
 
   return (
     <>
-      <div className="group fixed bottom-20 md:bottom-4 right-6">
+      <div className="group fixed bottom-20 md:bottom-4 right-6 ">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="relative bg-yellow-600 text-white px-3 py-[0.4rem] rounded-full shadow-lg 
@@ -248,7 +355,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
       </div>
 
       {isOpen && (
-        <div className="fixed bottom-20 right-6 w-[19rem] h-[25rem] bg-white rounded-xl shadow-lg border-none flex flex-col">
+        <div className="fixed bottom-20 right-6 w-[19rem] h-[25rem] bg-white rounded-xl shadow-lg border-none flex flex-col z-10">
           <div className="flex items-center justify-between p-3 bg-yellow-600 text-white rounded-t-lg flex-wrap">
             {navHistory.length > 1 && (
               <button
@@ -271,7 +378,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
             {messages.length === 0 ? (
               <div className="space-y-2">
                 <p className="text-gray-600 mb-2">
-                  {/* 👋 Hello buddy! How may I help you? 😊 */}
                   👋 Hello there, what would you like to know?
                 </p>
                 {chatbotData.map((data, index) => (
@@ -316,6 +422,14 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
                 </div>
               ))
             )}
+            {isAiThinking && (
+              <div className="text-left">
+                <span className="inline-block px-3 py-2 bg-gray-200 text-black rounded-lg">
+                  Thinking...
+                  <span className="inline-block ml-2 animate-pulse">🤔</span>
+                </span>
+              </div>
+            )}
             {/* Add this empty div at the end */}
             <div ref={messagesEndRef} />
           </div>
@@ -341,6 +455,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
                 onKeyDown={(e) =>
                   e.key === "Enter" && handleSendMessage(userInput)
                 }
+                disabled={isAiThinking}
               />
             </div>
 
@@ -348,9 +463,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
             <div className="flex items-center gap-1 flex-shrink-0">
               <button
                 onClick={toggleMicrophone}
+                disabled={isAiThinking}
                 className={`p-2 rounded-full ${
                   isListening ? "bg-red-500" : "bg-gray-200"
-                } hover:bg-blue-100 transition-colors`}
+                } hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                 title={isListening ? "Stop listening" : "Start voice input"}
               >
                 {/* Microphone icon SVG */}
@@ -385,9 +501,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
 
               <button
                 onClick={() => handleSendMessage(userInput)}
-                disabled={!userInput.trim()}
+                disabled={!userInput.trim() || isAiThinking}
                 className={`p-2 rounded-full ${
-                  userInput.trim()
+                  userInput.trim() && !isAiThinking
                     ? "bg-yellow-600 hover:bg-yellow-700"
                     : "bg-gray-300 cursor-not-allowed"
                 } text-white transition-colors`}

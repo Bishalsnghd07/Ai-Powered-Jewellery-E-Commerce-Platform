@@ -22,8 +22,10 @@ export default function CategoryCard({
       scroll={false}
       className="relative group w-full md:max-w-[19rem]"
     >
-      <div className="relative bg-gray-100 rounded-lg h-[150px] pt-20 px-6 pb-4 overflow-visible">
-        <p className="text-lg font-bold text-center tracking-wider">{title}</p>
+      <div className="flex flex-col bg-gray-100 rounded-lg h-auto pt-20 px-6 pb-4 overflow-visible">
+        <p className="text-lg font-bold text-center tracking-wider pt-2">
+          {title}
+        </p>
         <div className="flex items-center gap-2 mt-2 text-sm font-semibold tracking-wider text-gray-600 group-hover:text-orange-500 transition-colors justify-center w-full">
           <span>SHOP</span>
           <svg

@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "hf-mcp-server": {
+      "url": "https://huggingface.co/mcp",
+      "headers": {
+        "Authorization": "Bearer HUGGING_FACE_API_KEY"
+      }
+    }
+  }
+}

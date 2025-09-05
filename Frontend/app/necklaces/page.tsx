@@ -63,46 +63,50 @@ export default function NecklacesCollection() {
 
       {/* Featured Necklaces Sections */}
       {featuredNecklaces.map((necklace) => (
-        <div
-          key={necklace.id}
-          className={`flex flex-col ${
-            necklace.reverseLayout ? "md:flex-row-reverse" : "md:flex-row"
-          } justify-center items-center px-16 py-4 gap-8`}
-        >
-          <Image
-            src={necklace.imageSrc}
-            alt={necklace.title}
-            width={necklace.imageWidth || 550}
-            height={necklace.imageHeight || 550}
-            className={`rounded-lg ${
-              necklace.compact ? "md:w-[55vw] md:h-[55vh]" : "w-full"
-            }`}
-          />
-          <div className="flex flex-col w-full justify-center items-center">
-            <h1 className="text-amber-600 text-md font-normal tracking-[0.63rem] pt-2 md:pt-0 pb-4 text-center">
-              {necklace.tagline}
-            </h1>
-            <h2 className="text-4xl md:text-lg lg:text-3xl text-black font-bold tracking-wider pb-4 max-w-[18rem] text-center">
-              {necklace.title}
-            </h2>
-            <p className="opacity-45 max-w-[24rem] text-center text-sm leading-6">
-              {necklace.description}
-            </p>
-            <div className="flex flex-col items-center pt-4">
-              <Link href={necklace.href}>
-                <ShopButton />
-              </Link>
+        <div className="flex flex-col pb-7 md:pb-0">
+          <div
+            key={necklace.id}
+            className={`flex flex-col ${
+              necklace.reverseLayout ? "md:flex-row-reverse" : "md:flex-row"
+            } justify-center items-center px-12 md:px-16 py-4 gap-1 md:gap-8`}
+          >
+            <Image
+              src={necklace.imageSrc}
+              alt={necklace.title}
+              width={necklace.imageWidth || 550}
+              height={necklace.imageHeight || 550}
+              className={`rounded-lg ${
+                necklace.compact ? "md:w-[55vw] h-[29vh] md:h-[55vh]" : "w-full"
+              }`}
+            />
+            <div className="flex flex-col w-full justify-center items-center">
+              <div className="flex flex-row md:flex-col justify-between md:justify-normal md:items-center gap-2 lg:gap-0 md:pr-0 pt-4 md:pt-0">
+                <h1 className="text-amber-600 text-sm md:text-base font-normal tracking-[0.41rem] md:tracking-[0.63rem] pt-0 md:pt-0 md:pb-4 text-center">
+                  {necklace.tagline}
+                </h1>
+                <h2 className="text-sm md:text-lg lg:text-3xl text-black font-bold tracking-wider pb-4 md:max-w-[18rem] text-center">
+                  {necklace.title}
+                </h2>
+              </div>
+              <p className="opacity-45 max-w-[24rem] text-center text-[0.82rem] md:text-sm leading-6">
+                {necklace.description}
+              </p>
+              <div className="flex flex-row md:flex-col md:items-center pt-4">
+                <Link href={necklace.href}>
+                  <ShopButton />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       ))}
 
       {/* Category Grid Section */}
-      <section className="px-16 pt-24 md:pt-16 pb-8">
-        <h2 className="text-3xl font-bold text-center mb-8">
+      <section className="px-16 pt-6 md:pt-16 pb-8">
+        <h2 className="text-lg md:text-3xl font-bold text-center mb-11">
           Explore Necklace Styles
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-24 md:gap-8 pt-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-32 md:gap-8 pt-16">
           {necklaceCategories.map((category) => (
             <CategoryCard
               key={category.title}
