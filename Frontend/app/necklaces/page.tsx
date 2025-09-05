@@ -63,9 +63,8 @@ export default function NecklacesCollection() {
 
       {/* Featured Necklaces Sections */}
       {featuredNecklaces.map((necklace) => (
-        <div className="flex flex-col pb-7 md:pb-0">
+        <div key={necklace.id} className="flex flex-col pb-7 md:pb-0">
           <div
-            key={necklace.id}
             className={`flex flex-col ${
               necklace.reverseLayout ? "md:flex-row-reverse" : "md:flex-row"
             } justify-center items-center px-12 md:px-16 py-4 gap-1 md:gap-8`}
