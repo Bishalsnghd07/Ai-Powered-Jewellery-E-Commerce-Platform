@@ -71,7 +71,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const minLoadingTimer = setTimeout(() => {
       setMinLoadingComplete(true);
-    }, 1500);
+    }, 1200);
 
     return () => {
       clearTimeout(minLoadingTimer);
