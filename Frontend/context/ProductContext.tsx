@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { fetchProducts } from "@/lib/api";
-// Define your Product type in a shared file
+import { PuffLoader } from "react-spinners";
 
 interface Product {
   id: string;
@@ -11,7 +11,7 @@ interface Product {
   price: number;
   description: string;
   tagline?: string;
-  images: string[]; // Changed back to string[] since your API returns strings
+  images: string[];
   category: string;
   features?: string;
   includes?: { quantity: number; item: string }[];
@@ -31,6 +31,8 @@ const ProductContext = createContext<ProductContextType>({
 });
 
 export function ProductProvider({ children }: { children: React.ReactNode }) {
+  const [loading, setLoading] = useState(true);
+  const [minLoadingComplete, setMinLoadingComplete] = useState(false);
   const [state, setState] = useState<ProductContextType>({
     products: [],
     loading: true,
@@ -57,11 +59,36 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
           loading: false,
           error: error as Error,
         });
+      } finally {
+        setLoading(false);
       }
     };
 
     loadProducts();
   }, []);
+
+  // Minimum loading timer effect
+  useEffect(() => {
+    const minLoadingTimer = setTimeout(() => {
+      setMinLoadingComplete(true);
+    }, 1500);
+
+    return () => {
+      clearTimeout(minLoadingTimer);
+    };
+  }, []);
+
+  // Show loader for minimum 3 seconds OR until products load
+  if (loading || !minLoadingComplete) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
+        <PuffLoader color="#f59e0b" size={80} />
+        <p className="text-amber-600 font-light text-sm tracking-widest">
+          CURATING YOUR JEWELRY EXPERIENCE
+        </p>
+      </div>
+    );
+  }
 
   return (
     <ProductContext.Provider value={state}>{children}</ProductContext.Provider>
