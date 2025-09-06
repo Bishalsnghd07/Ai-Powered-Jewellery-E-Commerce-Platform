@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { fetchProducts } from "@/lib/api";
-import { PuffLoader } from "react-spinners";
+import { PuffLoader, CircleLoader } from "react-spinners";
 
 interface Product {
   id: string;
@@ -71,7 +71,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const minLoadingTimer = setTimeout(() => {
       setMinLoadingComplete(true);
-    }, 1200);
+    }, 1000);
 
     return () => {
       clearTimeout(minLoadingTimer);
@@ -82,7 +82,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   if (loading || !minLoadingComplete) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
-        <PuffLoader color="#f59e0b" size={80} />
+        <CircleLoader color="#f59e0b" size={80} />
         <p className="text-amber-600 font-light text-sm tracking-widest">
           CURATING YOUR JEWELRY EXPERIENCE
         </p>

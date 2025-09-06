@@ -315,10 +315,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
 
   return (
     <>
-      <div className="group fixed bottom-20 md:bottom-4 right-6 ">
+      <div className="group fixed bottom-8 md:bottom-4 right-2.5 md:right-6 z-40">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative bg-yellow-600 text-white px-3 py-[0.4rem] rounded-full shadow-lg 
+          className="relative bg-yellow-600 text-white px-3 py-[0.5rem] rounded-full shadow-lg 
                  hover:bg-yellow-700 transition-all duration-300
                  ring-0 hover:ring-8 ring-red-100/50"
         >

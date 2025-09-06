@@ -8,8 +8,8 @@ export default function HeroSection() {
   const featuredProduct = products.find((p) => p.id === "eternal-diamond-ring");
 
   return (
-    <div className="relative min-h-screen bg-[#f8f3ed] overflow-hidden">
-      <div className="absolute top-[39%] md:top-1/2 left-2 sm:left-16 lg:left-40 transform -translate-y-1/2 z-10 w-full max-w-[600px] px-4 text-center lg:text-left">
+    <div className="relative min-h-[55vh] md:min-h-screen bg-[#f8f3ed] overflow-hidden">
+      <div className="absolute top-[49%] md:top-1/2 left-2 sm:left-16 lg:left-40 transform -translate-y-1/2 z-10 w-full max-w-[600px] px-4 text-center lg:text-left">
         <NewProductBadge tagline={featuredProduct?.tagline} />
         <h1 className="text-4xl md:text-5xl lg:text-6xl text-[#3a3a3a] font-bold tracking-wider pb-2">
           {featuredProduct?.name}

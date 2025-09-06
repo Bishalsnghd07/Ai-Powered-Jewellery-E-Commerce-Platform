@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Chatbot from "@/components/ChatBot";
 import WelcomePopup from "@/components/ui/welcomePopup";
 import { useState } from "react";
+import JewelryMarquee from "@/components/ui/jewellary-marque";
 
 export default function Home() {
   const categories = [
@@ -36,8 +37,8 @@ export default function Home() {
     <main className="w-full overflow-x-hidden">
       <WelcomePopup onOpenChatbot={handleOpenChatbot} />
       <HeroSection />
-
-      <div className="flex flex-col md:flex-row justify-center items-center w-full px-4 pt-36 pb-16 md:pb-20 gap-[6.8rem] md:gap-[3rem] bg-white">
+      <JewelryMarquee />
+      <div className="flex flex-col md:flex-row justify-center items-center w-full px-4 pt-24 md:pt-32 pb-16 md:pb-20 gap-[6.8rem] md:gap-[3rem] bg-white">
         {categories.map((category) => (
           <CategoryCard
             key={category.title}
