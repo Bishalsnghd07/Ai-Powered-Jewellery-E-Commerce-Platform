@@ -1,8 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
+// import { NextRequest } from "next/server";
 import { chatbotData } from "@/constants";
+
+const jewelryDb = [
+  {
+    name: "Eternal Diamond Ring",
+    category: "Rings",
+    price: "$1,200",
+    material: "18K Gold",
+    description: "Handcrafted ethical diamonds.",
+  },
+  {
+    name: "Sapphire Pendant",
+    category: "Necklaces",
+    price: "$850",
+    material: "Silver",
+    description: "Deep blue sapphire with a minimalist chain.",
+  },
+  // Add more products here or import from your mockData file
+];
+// --- END: RAG DATA ---
 
 interface ChatbotProps {
   initialOpen?: boolean;
+  autoMessage?: boolean; // New prop to detect if opened via "Welcome" popup
 }
 
 interface FollowUpOption {
@@ -29,7 +50,10 @@ interface ChatMessage {
   followUpQuestions?: FollowUpOption[];
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
+const Chatbot: React.FC<ChatbotProps> = ({
+  initialOpen = false,
+  autoMessage = false,
+}) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userInput, setUserInput] = useState("");
@@ -56,75 +80,107 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
   }, [messages]); // Trigger when messages change
 
   // AI Response Function using Hugging Face API
-  const getAIResponse = async (inputText: string): Promise<string> => {
+  // Updated AI Function: Using Gemini (as seen in your route.ts)
+  const getGeminiResponse = async (inputText: string): Promise<string> => {
     try {
       setIsAiThinking(true);
+      const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
-      // Using a free AI API (Hugging Face Inference API)
-      // You'll need to create a free account at huggingface.co and get an API token
-      const HUGGING_FACE_API_KEY =
-        process.env.NEXT_PUBLIC_HUGGING_FACE_API_KEY || ""; // Set your API key in .env.local
+      const prompt = `
+        You are an expert jeweler at LuxeJewels. 
+        CONTEXT: ${JSON.stringify(jewelryDb)}
+        USER REQUEST: "${inputText}"
+        
+        INSTRUCTIONS:
+        1. Use the CONTEXT to recommend specific jewelry.
+        2. If the user is just saying hi, be warm and invite them to see the collection.
+        3. Keep the tone elegant and professional.
+        4. Use emojis like 💎, ✨, 💍.
+      `;
+
       const response = await fetch(
-        "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`,
         {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${HUGGING_FACE_API_KEY}`, // Replace with your API key
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ inputs: inputText }),
-        }
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+          }),
+        },
       );
 
-      // Check if the response is successful
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error(
-            "Invalid API token. Please check your Hugging Face token."
-          );
-        } else if (response.status === 503) {
-          // Model is loading, need to wait
-          return "The AI model is loading. Please try again in a few moments.";
-        } else {
-          throw new Error(
-            `API error: ${response.status} ${response.statusText}`
-          );
-        }
-      }
-
-      const result = await response.json();
+      const data = await response.json();
       setIsAiThinking(false);
 
-      if (result.error) {
-        console.error("AI API Error:", result.error);
-        return "I'm having trouble connecting to the AI service right now. Please try again later.";
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        return data.candidates[0].content.parts[0].text;
       }
-
-      // Extract the generated text from the response
-      return result.generated_text || "I'm not sure how to respond to that.";
+      return "I'm dazzled by your request, but I couldn't find an answer. Try asking about our rings or necklaces!";
     } catch (error) {
-      console.error("Error fetching AI response:", error);
       setIsAiThinking(false);
-      return "Sorry, I encountered an error while processing your request.";
+      return "Sorry, I'm having trouble connecting to my jewelry catalog right now.";
     }
   };
 
-  // Fallback to a simple rule-based response if API calls fail
-  const getFallbackResponse = (inputText: string): string => {
+  const handleSendMessage = async (
+    inputText: string,
+    forceAI: boolean = false,
+  ) => {
+    if (!inputText.trim()) return;
+
+    // Add user message to UI
+    if (!forceAI) {
+      setMessages((prev) => [...prev, { sender: "user", text: inputText }]);
+    }
+
     const lowerCaseInput = inputText.toLowerCase();
 
-    // Simple keyword matching as fallback
-    if (lowerCaseInput.includes("thank"))
-      return "You're welcome! Is there anything else I can help with?";
-    if (lowerCaseInput.includes("hello") || lowerCaseInput.includes("hi"))
-      return "Hello! How can I assist you today?";
-    if (lowerCaseInput.includes("help"))
-      return "I'm here to help! What do you need assistance with?";
-    if (lowerCaseInput.includes("bye") || lowerCaseInput.includes("goodbye"))
-      return "Goodbye! Feel free to come back if you have more questions.";
+    // Logic for Case 1 (Static Menu) vs Case 2 (Gemini AI)
+    if (!forceAI) {
+      const matchedResponse = findStaticResponse(chatbotData, lowerCaseInput);
+      if (matchedResponse) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "bot",
+            text: matchedResponse.text,
+            followUpQuestions: matchedResponse.followUpQuestions,
+          },
+        ]);
+        return;
+      }
+    }
 
-    return "I'm not sure how to respond to that. Could you try asking in a different way?";
+    // If no static match or if forced (Case 2), call Gemini
+    const aiResponse = await getGeminiResponse(inputText);
+    setMessages((prev) => [...prev, { sender: "bot", text: aiResponse }]);
   };
+
+  // Helper to find static matches (Extracted from your original code)
+  const findStaticResponse = (data: any[], input: string) => {
+    for (const item of data) {
+      if (item.question.toLowerCase() === input)
+        return { text: item.answer, followUpQuestions: item.options };
+    }
+    return null;
+  };
+
+  // Fallback to a simple rule-based response if API calls fail
+  // const getFallbackResponse = (inputText: string): string => {
+  //   const lowerCaseInput = inputText.toLowerCase();
+
+  //   // Simple keyword matching as fallback
+  //   if (lowerCaseInput.includes("thank"))
+  //     return "You're welcome! Is there anything else I can help with?";
+  //   if (lowerCaseInput.includes("hello") || lowerCaseInput.includes("hi"))
+  //     return "Hello! How can I assist you today?";
+  //   if (lowerCaseInput.includes("help"))
+  //     return "I'm here to help! What do you need assistance with?";
+  //   if (lowerCaseInput.includes("bye") || lowerCaseInput.includes("goodbye"))
+  //     return "Goodbye! Feel free to come back if you have more questions.";
+
+  //   return "I'm not sure how to respond to that. Could you try asking in a different way?";
+  // };
 
   const handleBack = () => {
     if (navHistory.length > 1) {
@@ -138,132 +194,132 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen = false }) => {
     }
   };
 
-  const handleSendMessage = async (inputText: string) => {
-    if (!inputText.trim()) return;
+  // const handleSendMessage = async (inputText: string) => {
+  //   if (!inputText.trim()) return;
 
-    // Add user message
-    setMessages((prev) => [...prev, { sender: "user", text: inputText }]);
+  //   // Add user message
+  //   setMessages((prev) => [...prev, { sender: "user", text: inputText }]);
 
-    const lowerCaseInput = inputText.toLowerCase();
+  //   const lowerCaseInput = inputText.toLowerCase();
 
-    const findResponse = (
-      data: ChatbotDataItem[],
-      input: string
-    ): { text: string; followUpQuestions?: FollowUpOption[] } | null => {
-      // Handle greetings first
-      const greetings = ["hi", "hello", "hey", "hola", "howdy"];
-      if (greetings.includes(input)) {
-        return {
-          text: "Hello buddy! How may I help you? 😊",
-          followUpQuestions: data[0].options, // Show first-level options
-        };
-      }
+  //   const findResponse = (
+  //     data: ChatbotDataItem[],
+  //     input: string
+  //   ): { text: string; followUpQuestions?: FollowUpOption[] } | null => {
+  //     // Handle greetings first
+  //     const greetings = ["hi", "hello", "hey", "hola", "howdy"];
+  //     if (greetings.includes(input)) {
+  //       return {
+  //         text: "Hello buddy! How may I help you? 😊",
+  //         followUpQuestions: data[0].options, // Show first-level options
+  //       };
+  //     }
 
-      // Check direct matches in main questions
-      for (const item of data) {
-        if (item.question.toLowerCase() === input) {
-          return {
-            text: item.answer || item.question,
-            followUpQuestions: item.options,
-          };
-        }
-      }
+  //     // Check direct matches in main questions
+  //     for (const item of data) {
+  //       if (item.question.toLowerCase() === input) {
+  //         return {
+  //           text: item.answer || item.question,
+  //           followUpQuestions: item.options,
+  //         };
+  //       }
+  //     }
 
-      // Search nested options recursively
-      const searchNestedOptions = (
-        options: FollowUpOption[]
-      ): ReturnType<typeof findResponse> => {
-        for (const option of options) {
-          if (option.option.toLowerCase() === input) {
-            if (option.answer) {
-              return { text: option.answer };
-            }
-            if (option.followUp) {
-              return {
-                text: option.followUp.question,
-                followUpQuestions: option.followUp.options,
-              };
-            }
-          }
+  //     // Search nested options recursively
+  //     const searchNestedOptions = (
+  //       options: FollowUpOption[]
+  //     ): ReturnType<typeof findResponse> => {
+  //       for (const option of options) {
+  //         if (option.option.toLowerCase() === input) {
+  //           if (option.answer) {
+  //             return { text: option.answer };
+  //           }
+  //           if (option.followUp) {
+  //             return {
+  //               text: option.followUp.question,
+  //               followUpQuestions: option.followUp.options,
+  //             };
+  //           }
+  //         }
 
-          if (option.followUp) {
-            const nestedResult = searchNestedOptions(option.followUp.options);
-            if (nestedResult) return nestedResult;
-          }
-        }
-        return null;
-      };
+  //         if (option.followUp) {
+  //           const nestedResult = searchNestedOptions(option.followUp.options);
+  //           if (nestedResult) return nestedResult;
+  //         }
+  //       }
+  //       return null;
+  //     };
 
-      for (const item of data) {
-        const result = searchNestedOptions(item.options);
-        if (result) return result;
-      }
+  //     for (const item of data) {
+  //       const result = searchNestedOptions(item.options);
+  //       if (result) return result;
+  //     }
 
-      return null;
-    };
+  //     return null;
+  //   };
 
-    const matchedResponse = findResponse(chatbotData, lowerCaseInput);
+  //   const matchedResponse = findResponse(chatbotData, lowerCaseInput);
 
-    if (matchedResponse) {
-      // Corrected messages update with proper scoping
-      setMessages((prevMessages) => {
-        const newMessages = [
-          ...prevMessages,
-          {
-            sender: "bot",
-            text:
-              matchedResponse?.text ||
-              "Sorry, I don't have an answer for that.",
-            followUpQuestions: matchedResponse?.followUpQuestions,
-          },
-        ];
+  //   if (matchedResponse) {
+  //     // Corrected messages update with proper scoping
+  //     setMessages((prevMessages) => {
+  //       const newMessages = [
+  //         ...prevMessages,
+  //         {
+  //           sender: "bot",
+  //           text:
+  //             matchedResponse?.text ||
+  //             "Sorry, I don't have an answer for that.",
+  //           followUpQuestions: matchedResponse?.followUpQuestions,
+  //         },
+  //       ];
 
-        // Update navigation history using correct references
-        if (matchedResponse?.followUpQuestions) {
-          setNavHistory((prevHistory) => [
-            ...prevHistory,
-            prevMessages.length > 0
-              ? prevMessages[prevMessages.length - 1]?.followUpQuestions || []
-              : chatbotData[0].options,
-          ]);
-        }
+  //       // Update navigation history using correct references
+  //       if (matchedResponse?.followUpQuestions) {
+  //         setNavHistory((prevHistory) => [
+  //           ...prevHistory,
+  //           prevMessages.length > 0
+  //             ? prevMessages[prevMessages.length - 1]?.followUpQuestions || []
+  //             : chatbotData[0].options,
+  //         ]);
+  //       }
 
-        return newMessages;
-      });
-    } else {
-      // If no predefined response found, use AI
-      try {
-        // Try Hugging Face API first
-        let aiResponse = await getAIResponse(inputText);
+  //       return newMessages;
+  //     });
+  //   } else {
+  //     // If no predefined response found, use AI
+  //     try {
+  //       // Try Hugging Face API first
+  //       let aiResponse = await getAIResponse(inputText);
 
-        // If the API returns an error, use the fallback
-        if (
-          aiResponse.includes("trouble connecting") ||
-          aiResponse.includes("error")
-        ) {
-          aiResponse = getFallbackResponse(inputText);
-        }
+  //       // If the API returns an error, use the fallback
+  //       if (
+  //         aiResponse.includes("trouble connecting") ||
+  //         aiResponse.includes("error")
+  //       ) {
+  //         aiResponse = getFallbackResponse(inputText);
+  //       }
 
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            sender: "bot",
-            text: aiResponse,
-          },
-        ]);
-      } catch (error) {
-        // If all else fails, use the fallback response
-        const fallbackResponse = getFallbackResponse(inputText);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            sender: "bot",
-            text: fallbackResponse,
-          },
-        ]);
-      }
-    }
-  };
+  //       setMessages((prevMessages) => [
+  //         ...prevMessages,
+  //         {
+  //           sender: "bot",
+  //           text: aiResponse,
+  //         },
+  //       ]);
+  //     } catch (error) {
+  //       // If all else fails, use the fallback response
+  //       const fallbackResponse = getFallbackResponse(inputText);
+  //       setMessages((prevMessages) => [
+  //         ...prevMessages,
+  //         {
+  //           sender: "bot",
+  //           text: fallbackResponse,
+  //         },
+  //       ]);
+  //     }
+  //   }
+  // };
 
   const handleBackToMenu = () => setMessages([]);
 
