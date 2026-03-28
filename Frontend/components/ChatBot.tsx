@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 // import { NextRequest } from "next/server";
 import { chatbotData } from "@/constants";
+import ReactMarkdown from "react-markdown";
 
 const jewelryDb = [
   {
@@ -457,9 +458,23 @@ const Chatbot: React.FC<ChatbotProps> = ({
                     </div>
                   ) : (
                     <div className="text-left">
-                      <span className="inline-block px-3 py-2 bg-gray-200 text-black rounded-lg">
+                      {/* <span className="inline-block px-3 py-2 bg-gray-200 text-black rounded-lg">
                         {msg.text}
-                      </span>
+                      </span> */}
+                      <div className="inline-block px-3 py-2 bg-gray-200 text-black rounded-lg">
+                        <ReactMarkdown
+                          components={{
+                            strong: ({ node, ...props }) => (
+                              <span
+                                className="font-bold text-black"
+                                {...props}
+                              />
+                            ),
+                          }}
+                        >
+                          {msg.text}
+                        </ReactMarkdown>
+                      </div>
                       {msg.followUpQuestions && (
                         <div className="mt-2 space-y-1">
                           {msg.followUpQuestions.map((followUp, i) => (
