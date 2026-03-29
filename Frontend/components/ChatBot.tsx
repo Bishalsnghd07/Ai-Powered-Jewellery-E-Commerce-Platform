@@ -24,7 +24,7 @@ const jewelryDb = [
 
 interface ChatbotProps {
   initialOpen?: boolean;
-  autoMessage?: boolean; // New prop to detect if opened via "Welcome" popup
+  autoMessage?: string | null; // New prop to detect if opened via "Welcome" popup
 }
 
 interface FollowUpOption {
@@ -51,22 +51,34 @@ interface ChatMessage {
   followUpQuestions?: FollowUpOption[];
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({
-  initialOpen = false,
-  autoMessage = false,
-}) => {
-  const [isOpen, setIsOpen] = useState(initialOpen);
+const Chatbot: React.FC<ChatbotProps> = ({ initialOpen, autoMessage }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userInput, setUserInput] = useState("");
   const [navHistory, setNavHistory] = useState<FollowUpOption[][]>([]);
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
   const [isAiThinking, setIsAiThinking] = useState(false);
+  const [inputText, setInputText] = useState("");
 
   // Add this useEffect to handle changes to initialOpen
+  // useEffect(() => {
+  //   setIsOpen(initialOpen);
+  // }, [initialOpen]);
+
+  // 2. THE FIX: Sync the internal 'isOpen' with the 'initialOpen' prop
   useEffect(() => {
-    setIsOpen(initialOpen);
-  }, [initialOpen]);
+    if (initialOpen) {
+      setIsOpen(true);
+    }
+  }, [initialOpen]); // This runs every time 'initialOpen' changes in page.tsx
+
+  // 3. Your existing autoMessage logic
+  useEffect(() => {
+    if (autoMessage && isOpen) {
+      handleSendMessage(autoMessage);
+    }
+  }, [autoMessage, isOpen]);
 
   // Add scroll ref
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -123,22 +135,58 @@ const Chatbot: React.FC<ChatbotProps> = ({
     }
   };
 
+  // const handleSendMessage = async (
+  //   inputText: string,
+  //   forceAI: boolean = false,
+  // ) => {
+  //   if (!inputText.trim()) return;
+  //   setInputText("");
+
+  //   // Add user message to UI
+  //   if (!forceAI) {
+  //     setMessages((prev) => [...prev, { sender: "user", text: inputText }]);
+  //   }
+
+  //   const lowerCaseInput = inputText.toLowerCase();
+
+  //   // Logic for Case 1 (Static Menu) vs Case 2 (Gemini AI)
+  //   if (!forceAI) {
+  //     const matchedResponse = findStaticResponse(chatbotData, lowerCaseInput);
+  //     if (matchedResponse) {
+  //       setMessages((prev) => [
+  //         ...prev,
+  //         {
+  //           sender: "bot",
+  //           text: matchedResponse.text,
+  //           followUpQuestions: matchedResponse.followUpQuestions,
+  //         },
+  //       ]);
+  //       return;
+  //     }
+  //   }
+
+  //   // If no static match or if forced (Case 2), call Gemini
+  //   const aiResponse = await getGeminiResponse(inputText);
+  //   setMessages((prev) => [...prev, { sender: "bot", text: aiResponse }]);
+  // };
+
   const handleSendMessage = async (
     inputText: string,
     forceAI: boolean = false,
   ) => {
     if (!inputText.trim()) return;
 
-    // Add user message to UI
-    if (!forceAI) {
-      setMessages((prev) => [...prev, { sender: "user", text: inputText }]);
-    }
+    // 1. Clear input field instantly for better UX
+    setInputText("");
 
-    const lowerCaseInput = inputText.toLowerCase();
+    // 2. Add User's message to UI
+    setMessages((prev) => [...prev, { sender: "user", text: inputText }]);
 
-    // Logic for Case 1 (Static Menu) vs Case 2 (Gemini AI)
+    // 3. Logic for Case 1: Static Menu (If not forced to AI)
     if (!forceAI) {
+      const lowerCaseInput = inputText.toLowerCase();
       const matchedResponse = findStaticResponse(chatbotData, lowerCaseInput);
+
       if (matchedResponse) {
         setMessages((prev) => [
           ...prev,
@@ -148,12 +196,15 @@ const Chatbot: React.FC<ChatbotProps> = ({
             followUpQuestions: matchedResponse.followUpQuestions,
           },
         ]);
-        return;
+        return; // Exit early if we found a static match
       }
     }
 
-    // If no static match or if forced (Case 2), call Gemini
+    // 4. Case 2: Fallback to Gemini AI
+    // Set a "thinking" state here if you have one
     const aiResponse = await getGeminiResponse(inputText);
+
+    // 5. Add AI's response to UI
     setMessages((prev) => [...prev, { sender: "bot", text: aiResponse }]);
   };
 
@@ -352,7 +403,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
         recognitionRef.current.stop();
       }
     };
-  }, []);
+  });
 
   // 3. Add microphone toggle function
   const toggleMicrophone = () => {

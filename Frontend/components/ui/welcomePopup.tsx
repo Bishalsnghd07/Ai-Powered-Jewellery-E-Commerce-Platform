@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 interface WelcomePopupProps {
-  onOpenChatbot: () => void;
+  onOpenChatbot: (message: string) => void;
 }
 
 const WelcomePopup: React.FC<WelcomePopupProps> = ({ onOpenChatbot }) => {
@@ -26,9 +26,17 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ onOpenChatbot }) => {
     setIsVisible(false);
   };
 
+  // const handleButtonClick = () => {
+  //   handleClose();
+  //   onOpenChatbot();
+  // };
+  const welcomePrompt =
+    "Welcome user, you can explore and choose your suitable jewelry";
+
   const handleButtonClick = () => {
-    handleClose();
-    onOpenChatbot();
+    setIsVisible(false);
+    // Send the prompt to the Home page
+    onOpenChatbot(welcomePrompt);
   };
 
   if (!isVisible) return null;
@@ -72,17 +80,23 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ onOpenChatbot }) => {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome!</h2>
+          {/* <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome!</h2>
           <p className="text-gray-600 mb-6">
             Hi there! 👋 Welcome to our website. How can we help you today?
-          </p>
+          </p> */}
+
+          <h2 className="text-2xl font-bold text-gray-800 mb-2 font-serif">
+            Luxury Awaits
+          </h2>
+          <p className="text-gray-600 mb-8 italic">{welcomePrompt}</p>
 
           <div className="space-y-3">
             <button
               onClick={handleButtonClick}
               className="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition-colors"
             >
-              Chat with Us
+              {/* Chat with Us */}
+              Start Personal Shopping →
             </button>
 
             <button

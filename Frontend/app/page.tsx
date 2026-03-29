@@ -28,8 +28,10 @@ export default function Home() {
   ];
 
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [autoMessage, setAutoMessage] = useState<string | null>(null);
 
-  const handleOpenChatbot = () => {
+  const handleOpenChatbot = (message: string | null = null) => {
+    setAutoMessage(message); // Save the message to pass to the bot
     setIsChatbotOpen(true);
   };
 
@@ -49,7 +51,7 @@ export default function Home() {
         ))}
       </div>
       <AboutSection />
-      <Chatbot initialOpen={isChatbotOpen} />
+      <Chatbot initialOpen={isChatbotOpen} autoMessage={autoMessage} />
       <Footer />
     </main>
   );
