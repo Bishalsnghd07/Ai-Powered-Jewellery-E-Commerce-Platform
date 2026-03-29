@@ -25,6 +25,7 @@ const jewelryDb = [
 interface ChatbotProps {
   initialOpen?: boolean;
   autoMessage?: string | null; // New prop to detect if opened via "Welcome" popup
+  onMessageProcessed: () => void; // Add this to your interface
 }
 
 interface FollowUpOption {
@@ -51,7 +52,11 @@ interface ChatMessage {
   followUpQuestions?: FollowUpOption[];
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ initialOpen, autoMessage }) => {
+const Chatbot: React.FC<ChatbotProps> = ({
+  initialOpen,
+  autoMessage,
+  onMessageProcessed,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userInput, setUserInput] = useState("");
@@ -77,8 +82,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen, autoMessage }) => {
   useEffect(() => {
     if (autoMessage && isOpen) {
       handleSendMessage(autoMessage);
+
+      // THE FIX: Tell the parent to set autoMessage back to null
+      onMessageProcessed();
     }
-  }, [autoMessage, isOpen]);
+  }, [autoMessage, isOpen, onMessageProcessed]);
 
   // Add scroll ref
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -112,7 +120,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen, autoMessage }) => {
       `;
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${API_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -134,41 +142,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialOpen, autoMessage }) => {
       return "Sorry, I'm having trouble connecting to my jewelry catalog right now.";
     }
   };
-
-  // const handleSendMessage = async (
-  //   inputText: string,
-  //   forceAI: boolean = false,
-  // ) => {
-  //   if (!inputText.trim()) return;
-  //   setInputText("");
-
-  //   // Add user message to UI
-  //   if (!forceAI) {
-  //     setMessages((prev) => [...prev, { sender: "user", text: inputText }]);
-  //   }
-
-  //   const lowerCaseInput = inputText.toLowerCase();
-
-  //   // Logic for Case 1 (Static Menu) vs Case 2 (Gemini AI)
-  //   if (!forceAI) {
-  //     const matchedResponse = findStaticResponse(chatbotData, lowerCaseInput);
-  //     if (matchedResponse) {
-  //       setMessages((prev) => [
-  //         ...prev,
-  //         {
-  //           sender: "bot",
-  //           text: matchedResponse.text,
-  //           followUpQuestions: matchedResponse.followUpQuestions,
-  //         },
-  //       ]);
-  //       return;
-  //     }
-  //   }
-
-  //   // If no static match or if forced (Case 2), call Gemini
-  //   const aiResponse = await getGeminiResponse(inputText);
-  //   setMessages((prev) => [...prev, { sender: "bot", text: aiResponse }]);
-  // };
 
   const handleSendMessage = async (
     inputText: string,

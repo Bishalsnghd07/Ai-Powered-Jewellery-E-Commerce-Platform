@@ -35,6 +35,11 @@ export default function Home() {
     setIsChatbotOpen(true);
   };
 
+  // ADD THIS FUNCTION:
+  const clearAutoMessage = () => {
+    setAutoMessage(null);
+  };
+
   return (
     <main className="w-full overflow-x-hidden">
       <WelcomePopup onOpenChatbot={handleOpenChatbot} />
@@ -51,7 +56,11 @@ export default function Home() {
         ))}
       </div>
       <AboutSection />
-      <Chatbot initialOpen={isChatbotOpen} autoMessage={autoMessage} />
+      <Chatbot
+        initialOpen={isChatbotOpen}
+        autoMessage={autoMessage}
+        onMessageProcessed={clearAutoMessage} // Pass the function to clear the autoMessage after it's processed
+      />
       <Footer />
     </main>
   );

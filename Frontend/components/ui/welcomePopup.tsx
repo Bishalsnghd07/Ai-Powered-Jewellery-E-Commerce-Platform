@@ -34,6 +34,7 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ onOpenChatbot }) => {
     "Welcome user, you can explore and choose your suitable jewelry";
 
   const handleButtonClick = () => {
+    handleClose();
     setIsVisible(false);
     // Send the prompt to the Home page
     onOpenChatbot(welcomePrompt);
