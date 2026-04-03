@@ -18,6 +18,8 @@ app.use(
   cors({
     origin: [
       "https://ai-powered-jewellery-e-commerce-pla.vercel.app",
+      'https://kin-ultrapower-9150z3yww-bishalsnghd07s-projects.vercel.app',
+  'https://kin-ultrapower.vercel.app',
       "http://localhost:3000",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
