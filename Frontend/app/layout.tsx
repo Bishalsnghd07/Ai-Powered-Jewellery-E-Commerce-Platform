@@ -3,6 +3,7 @@ import "./index.css";
 import Navbar from "@/components/Navbar";
 import { CartProvider } from "@/context/CartContext";
 import { ProductProvider } from "@/context/ProductContext";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Jewelry Store",
@@ -27,6 +28,7 @@ export default function RootLayout({
             {children}
           </CartProvider>
         </ProductProvider>
+        <Analytics />
       </body>
     </html>
   );
